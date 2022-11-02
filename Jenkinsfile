@@ -1,14 +1,22 @@
 pipeline {
     agent {label 'OPEN' }
-	stages {
+    parameters {
+        choice(name: 'BRANCH_TO_BUILD', choices: ['rel', 'dev', 'main'], description: 'Branch to build')
+        string(name: 'MAVEN_GOAL', defaultValue: 'package', description: 'maven goal')
+
+    }
+    triggers {
+        cron('30 15 * * *')
+    }
+    stages {
         stage ('source code  from git remote repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/iamsam2772/spring-petclinic-sam.git'
+                git branch: "${params.BRANCH_TO_BUILD}", url: 'https://github.com/iamsam2772/spring-petclinic-sam.git'
             }
         }
         stage('To build maven package') {
             steps {
-                sh "mvn package"
+                sh "mvn ${params.MAVEN_GOAL}"
             }
         }
         stage("archive artifact") {
