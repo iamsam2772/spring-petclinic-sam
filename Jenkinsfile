@@ -5,7 +5,7 @@ pipeline {
 	string(name: 'GOAL', defaultValue: 'package', description: 'our Goal')
 	}
 	triggers{
-	      pollSCM('* * * * *')
+	      pollSCM('H/2 * * * *')
 	}
     stages {
         stage ('source code  from git remote repository') {
