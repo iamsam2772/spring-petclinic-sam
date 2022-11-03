@@ -6,7 +6,7 @@ pipeline {
 
     }
     triggers {
-        pollSCM('* * * * *')
+        pollSCM('H/2 * * * *')
     }
     stages {
         stage ('source code  from git remote repository') {
