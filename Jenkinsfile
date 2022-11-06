@@ -1,25 +1,39 @@
 pipeline {
-    agent {label 'OPEN' }
-	stages {
+    agent {label 'openjdk-11-maven'}
+    stages {
         stage ('source code  from git remote repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/iamsam2772/spring-petclinic-sam.git'
+               git url: 'https://github.com/iamsam2772/spring-petclinic-sam.git',
+                branch: 'main'
             }
         }
-        stage('To build maven package') {
+        stage ('Artifactory configuration') {
             steps {
-                sh "mvn package"
+				rtMavenDeployer (
+                    id: "MAVEN_DEPLOYER",
+                    serverId:     "jfrog_masameer",
+                    releaseRepo:  "qt-libs-release-local",
+                    snapshotRepo: "qt-libs-snapshot-local",
+                    deployArtifacts : true
+                )
             }
         }
-        stage("archive artifact") {
+        stage ('Exec Maven') {
             steps {
-                archiveArtifacts '**/target/*.jar'
+                rtMavenRun (
+                    tool:  "MVN_DEFAULT",
+                    pom:   "pom.xml",
+                    goals: "clean install",
+                    deployerId: "MAVEN_DEPLOYER",
+                )
             }
         }
-        stage("junit Reports") {
+        stage ('Publish build info') {
             steps {
-                junit '**/surefire-reports/*.xml'
+                rtPublishBuildInfo (
+                    serverId: "jfrog_masameer"
+                )
             }
         }
-    }
+    }	
 }
