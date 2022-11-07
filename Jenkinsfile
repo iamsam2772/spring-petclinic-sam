@@ -10,8 +10,8 @@ pipeline {
                 mail subject: "Build Started for Jenkins JOB $env.JOB_NAME", 
                   body: "Build Started for Jenkins JOB $env.JOB_NAME", 
                   to: 'masameer9440@gmail.com' 
-                git branch: "${params.BRANCH_TO_BUILD}"
-				, url: 'https://github.com/iamsam2772/spring-petclinic-sam.git'
+                git branch: "${params.BRANCH_TO_BUILD}",
+                url: 'https://github.com/iamsam2772/spring-petclinic-sam.git'
             }
             
         }
